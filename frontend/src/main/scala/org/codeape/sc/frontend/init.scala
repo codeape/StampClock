@@ -6,21 +6,22 @@ import org.codeape.sc.shared.MainServerREST
 import org.scalajs.dom
 import org.scalajs.dom.{Element, document}
 
+import scala.concurrent.ExecutionContextExecutor
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
 import scala.util.Try
 
 object Context {
-  implicit val executionContext = scalajs.concurrent.JSExecutionContext.Implicits.queue
-  private val routingRegistry = new RoutingRegistryDef
+  implicit val executionContext: ExecutionContextExecutor = scalajs.concurrent.JSExecutionContext.Implicits.queue
+  private val routingRegistry: RoutingRegistryDef = new RoutingRegistryDef
   private val viewPresenterRegistry = new StatesToViewPresenterDef
 
   implicit val applicationInstance = new Application[RoutingState](routingRegistry, viewPresenterRegistry, RootState)
 
   import io.udash.rest._
-  val port = Try(dom.window.location.port.toInt).getOrElse(80)
-  val host = dom.window.location.hostname
-  val restServer = DefaultServerREST[MainServerREST](host, port, "/api/")
+  val port: Int = Try(dom.window.location.port.toInt).getOrElse(80)
+  val host: String = dom.window.location.hostname
+  val restServer: MainServerREST = DefaultServerREST[MainServerREST](host, port, "/api/")
 }
 
 object Init extends JSApp with StrictLogging {
