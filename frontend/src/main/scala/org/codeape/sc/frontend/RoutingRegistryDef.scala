@@ -11,9 +11,11 @@ class RoutingRegistryDef extends RoutingRegistry[RoutingState] {
 
   private val url2State: PartialFunction[String, RoutingState] = {
     case "" => IndexState
+    case "/login" => LoginFormState()
   }
 
   private val state2Url: PartialFunction[RoutingState, String] = {
     case IndexState => ""
+    case LoginFormState() => "/login"
   }
 }

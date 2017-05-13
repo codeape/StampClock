@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
+import org.codeape.sc.backend.components.LoginComponent
 
 import scala.io.StdIn
 
@@ -15,6 +16,8 @@ object Launcher {
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.dispatcher
 
+    val loginComponent = new LoginComponent()
+
     val route =
       path("") {
         getFromFile("backend/target/UdashStatic/WebContent/index.html")
@@ -24,7 +27,12 @@ object Launcher {
       } ~
       pathPrefix("assets"){
         getFromDirectory("backend/target/UdashStatic/WebContent/assets")
+      } ~
+      pathPrefix("api") {
+        loginComponent.route
       }
+
+
     val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
 
     println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")

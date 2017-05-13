@@ -22,6 +22,10 @@ object Context {
   val port: Int = Try(dom.window.location.port.toInt).getOrElse(80)
   val host: String = dom.window.location.hostname
   val restServer: MainServerREST = DefaultServerREST[MainServerREST](host, port, "/api/")
+
+  def getToken(): String = jQ("#token").value().asInstanceOf[String]
+
+  def setToken(tok: String)  = jQ("#token").value(tok)
 }
 
 object Init extends JSApp with StrictLogging {
@@ -31,11 +35,15 @@ object Init extends JSApp with StrictLogging {
   override def main(): Unit = {
     logger.info("StampClock started")
     jQ(document).ready((_: Element) => {
+      logger.info(s"Token ${Context.getToken()}")
+      Context.setToken("korv")
+      logger.info(s"Token ${Context.getToken()}")
       val appRoot = jQ("#application").get(0)
       if (appRoot.isEmpty) {
         logger.error("Application root element not found! Check your index.html file!")
       } else {
         applicationInstance.run(appRoot.get)
+        applicationInstance.goTo(LoginFormState())
       }
     })
   }
