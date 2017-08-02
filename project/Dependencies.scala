@@ -2,7 +2,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt._
 
 object Dependencies {
-  val udashVersion = "0.5.0-RC.1"
+  val udashVersion = "0.5.0"
   val udashJQueryVersion = "1.0.1"
 
   val logbackVersion = "1.1.3"
