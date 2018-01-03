@@ -7,8 +7,7 @@ import org.scalajs.dom
 import org.scalajs.dom.{Element, document}
 
 import scala.concurrent.ExecutionContextExecutor
-import scala.scalajs.js.JSApp
-import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.annotation.JSExportTopLevel
 import scala.util.Try
 
 object Context {
@@ -16,7 +15,8 @@ object Context {
   private val routingRegistry: RoutingRegistryDef = new RoutingRegistryDef
   private val viewPresenterRegistry = new StatesToViewPresenterDef
 
-  implicit val applicationInstance = new Application[RoutingState](routingRegistry, viewPresenterRegistry, RootState)
+  implicit val applicationInstance: Application[RoutingState] =
+    new Application[RoutingState](routingRegistry, viewPresenterRegistry, RootState)
 
   import io.udash.rest._
   val port: Int = Try(dom.window.location.port.toInt).getOrElse(80)
@@ -28,11 +28,11 @@ object Context {
   def setToken(tok: String)  = jQ("#token").value(tok)
 }
 
-object Init extends JSApp with StrictLogging {
+object Init extends StrictLogging {
   import Context._
 
-  @JSExport
-  override def main(): Unit = {
+  @JSExportTopLevel("org.codeape.sc.frontend.Init.main")
+  def main(): Unit = {
     logger.info("StampClock started")
     jQ(document).ready((_: Element) => {
       logger.info(s"Token ${Context.getToken()}")

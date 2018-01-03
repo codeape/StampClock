@@ -6,7 +6,6 @@ object Dependencies {
   val udashJQueryVersion = "1.0.1"
 
   val logbackVersion = "1.1.3"
-  val jettyVersion = "9.3.11.v20160721"
   val akkaVersion = "2.4.17"
   val akkaHttpVersion = "10.0.5"
 

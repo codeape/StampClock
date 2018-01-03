@@ -4,7 +4,7 @@ import UdashBuild._
 name := "stamp-clock"
 
 version in ThisBuild := "0.0.1"
-scalaVersion in ThisBuild := "2.12.2"
+scalaVersion in ThisBuild := "2.12.4"
 organization in ThisBuild := "org.codeape"
 crossPaths in ThisBuild := false
 scalacOptions in ThisBuild ++= Seq(
@@ -15,7 +15,7 @@ scalacOptions in ThisBuild ++= Seq(
   "-language:existentials",
   "-language:dynamics",
   "-Xfuture",
-  //"-Xfatal-warnings",
+  "-Xfatal-warnings", //Can be commented out on js warnings
   "-Xlint:_,-missing-interpolator,-adapted-args"
 )
 
@@ -44,10 +44,10 @@ lazy val backend = project.in(file("backend"))
     libraryDependencies ++= backendDeps.value,
     crossLibs(Compile),
 
-    compile <<= (compile in Compile),
-    (compile in Compile) <<= (compile in Compile).dependsOn(copyStatics),
+    compile := (compile in Compile).value,
+    (compile in Compile) := (compile in Compile dependsOn copyStatics).value,
     copyStatics := IO.copyDirectory((crossTarget in frontend).value / StaticFilesDir, (target in Compile).value / StaticFilesDir),
-    copyStatics <<= copyStatics.dependsOn(compileStatics in frontend),
+    copyStatics := (copyStatics dependsOn (compileStatics in frontend)).value,
 
     mappings in (Compile, packageBin) ++= {
       copyStatics.value
@@ -66,15 +66,16 @@ lazy val frontend = project.in(file("frontend")).enablePlugins(ScalaJSPlugin)
     crossLibs(Compile),
     jsDependencies ++= frontendJSDeps.value,
     scalaJSUseMainModuleInitializer in Compile := true,
+    mainClass in Compile := Some("org.codeape.sc.frontend.Init"),
 
-    compile <<= (compile in Compile),
+    compile := (compile in Compile).value,
     compileStatics := {
       IO.copyDirectory(sourceDirectory.value / "main/assets/fonts", crossTarget.value / StaticFilesDir / WebContent / "assets/fonts")
       IO.copyDirectory(sourceDirectory.value / "main/assets/images", crossTarget.value / StaticFilesDir / WebContent / "assets/images")
       compileStaticsForRelease.value
       (crossTarget.value / StaticFilesDir).***.get
     },
-    compileStatics <<= compileStatics.dependsOn(compile in Compile),
+    compileStatics := (compileStatics dependsOn (compile in Compile)).value,
 
     artifactPath in(Compile, fastOptJS) :=
       (crossTarget in(Compile, fastOptJS)).value / StaticFilesDir / WebContent / "scripts" / "frontend-impl-fast.js",
