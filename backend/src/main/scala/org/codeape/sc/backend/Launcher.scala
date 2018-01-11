@@ -30,6 +30,8 @@ object Launcher {
       } ~
       pathPrefix("api") {
         loginComponent.route
+        //TODO: Add authed fileter here
+        //TODO: Add the rest here
       }
 
 
