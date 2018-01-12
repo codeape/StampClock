@@ -6,15 +6,16 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import org.codeape.sc.backend.components.LoginComponent
 
+import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
 
 object Launcher {
 
   def main(args: Array[String]): Unit = {
-    implicit val system = ActorSystem("my-system")
-    implicit val materializer = ActorMaterializer()
+    implicit val system: ActorSystem = ActorSystem("my-system")
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
     // needed for the future flatMap/onComplete in the end
-    implicit val executionContext = system.dispatcher
+    implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
     val loginComponent = new LoginComponent()
 
