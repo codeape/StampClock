@@ -36,8 +36,8 @@ object Init extends StrictLogging {
     logger.info("StampClock started")
     jQ(document).ready((_: Element) => {
       logger.info(s"Token ${Context.getToken()}")
-      Context.setToken("korv")
-      logger.info(s"Token ${Context.getToken()}")
+      //Context.setToken("korv")
+      //logger.info(s"Token ${Context.getToken()}")
       val appRoot = jQ("#application").get(0)
       if (appRoot.isEmpty) {
         logger.error("Application root element not found! Check your index.html file!")

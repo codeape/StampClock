@@ -7,6 +7,7 @@ class StatesToViewPresenterDef extends ViewPresenterRegistry[RoutingState] {
   def matchStateToResolver(state: RoutingState): ViewPresenter[_ <: RoutingState] = state match {
     case RootState => RootViewPresenter
     case LoginFormState() => LoginFormViewPresenter()
+    case WeekFormState() => WeekFormViewPresenter()
     case _ => ErrorViewPresenter
   }
 }

@@ -10,12 +10,14 @@ class RoutingRegistryDef extends RoutingRegistry[RoutingState] {
     Url(state2Url.apply(state))
 
   private val url2State: PartialFunction[String, RoutingState] = {
-    case "" => IndexState
+    case "" => RootState
     case "/login" => LoginFormState()
+    case "/week" => WeekFormState()
   }
 
   private val state2Url: PartialFunction[RoutingState, String] = {
-    case IndexState => ""
+    case RootState => ""
     case LoginFormState() => "/login"
+    case WeekFormState() => "/week"
   }
 }

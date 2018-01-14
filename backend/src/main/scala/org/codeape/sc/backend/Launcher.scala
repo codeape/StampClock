@@ -4,7 +4,8 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import org.codeape.sc.backend.components.LoginComponent
+import org.codeape.sc.backend.components.{LoginComponent, PingComponent}
+import org.codeape.sc.backend.filters.AuthFilter
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
@@ -18,21 +19,25 @@ object Launcher {
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
     val loginComponent = new LoginComponent()
+    val authFilter = new AuthFilter()
+    val pingComponent = new PingComponent()
 
     val route =
-      path("") {
+      (path("") & get) {
         getFromFile("backend/target/UdashStatic/WebContent/index.html")
       } ~
-      pathPrefix("scripts"){
+      (pathPrefix("scripts") & get){
         getFromDirectory("backend/target/UdashStatic/WebContent/scripts")
       } ~
-      pathPrefix("assets"){
+      (pathPrefix("assets")  & get){
         getFromDirectory("backend/target/UdashStatic/WebContent/assets")
       } ~
       pathPrefix("api") {
-        loginComponent.route
-        //TODO: Add authed fileter here
-        //TODO: Add the rest here
+        loginComponent.route ~
+        // Add all components/filters that do not use auth above
+        authFilter.route ~
+        // Add all components/filters that require auth below
+        pingComponent.route
       }
 
 

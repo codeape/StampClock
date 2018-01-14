@@ -11,5 +11,5 @@ object AuthToken extends ((String) => AuthToken) {
 }
 
 object AuthTokenRequest extends ((String, String, String) => AuthTokenRequest){
-  implicit val authTokenRequest: GenCodec[AuthTokenRequest] = GenCodec.materialize[AuthTokenRequest]
+  implicit val authTokenRequestGenCodec: GenCodec[AuthTokenRequest] = GenCodec.materialize[AuthTokenRequest]
 }

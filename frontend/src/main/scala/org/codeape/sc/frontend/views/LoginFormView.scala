@@ -5,7 +5,7 @@ import io.udash._
 import io.udash.bootstrap.button.{ButtonStyle, UdashButton}
 import io.udash.bootstrap.form.UdashForm
 import io.udash.core.Presenter
-import org.codeape.sc.frontend.{Context, IndexState, LoginFormState}
+import org.codeape.sc.frontend.{Context, WeekFormState, LoginFormState}
 import org.codeape.sc.shared.model.AuthTokenRequest
 
 import scala.util.{Failure, Success}
@@ -65,7 +65,8 @@ class LoginFormPresenter(model: ModelProperty[LoginFormModel]) extends Presenter
     )
   ).onComplete{
     case Success(token) =>
-      applicationInstance.goTo(IndexState)
+      Context.setToken(token.id)
+      applicationInstance.goTo(WeekFormState())
     case Failure(HttpException(response)) =>
       model.subProp(_.status).set(s"Fail: ${response.body} ${response.statusCode}")
     case Failure(ex) =>

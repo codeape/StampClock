@@ -8,13 +8,11 @@ import org.codeape.sc.shared.model.{AuthToken, AuthTokenRequest}
 
 class LoginComponent extends StampClockJsonMarshaller {
 
-  private val authToken = AuthToken(id = "Testreply")
-
-  val route: Route = pathPrefix("auth") {
-    pathPrefix("login") {
+  def route: Route = pathPrefix("auth") {
+    path("login") {
       post {
         entity(as[AuthTokenRequest]) { request =>
-          complete { authToken }
+          complete { AuthToken(id = request.password) }
         }
       }
     }

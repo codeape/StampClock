@@ -9,6 +9,7 @@ import scala.concurrent.Future
 trait MainServerREST {
 
   def auth(): AuthREST
+  def util(): UtilREST
 
 }
 
@@ -17,5 +18,13 @@ trait AuthREST {
 
   @POST
   def login(@Body request: AuthTokenRequest): Future[AuthToken]
+
+}
+
+@REST
+trait UtilREST {
+
+  @POST
+  def ping(@Header stamptoken: String, @Body request: PingRequest): Future[PingReply]
 
 }

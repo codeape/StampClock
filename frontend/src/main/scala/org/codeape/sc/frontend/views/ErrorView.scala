@@ -2,9 +2,9 @@ package org.codeape.sc.frontend.views
 
 import io.udash._
 import io.udash.core.DefaultViewPresenterFactory
-import org.codeape.sc.frontend.IndexState
+import org.codeape.sc.frontend.ErrorState
 
-object ErrorViewPresenter extends DefaultViewPresenterFactory[IndexState.type](() => new ErrorView)
+object ErrorViewPresenter extends DefaultViewPresenterFactory[ErrorState.type](() => new ErrorView)
 
 class ErrorView extends View {
   import scalatags.JsDom.all._
