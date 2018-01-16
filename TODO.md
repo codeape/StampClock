@@ -1,6 +1,6 @@
 Concrete
 ---
-* Add logging
+* Add session number to the logging
 * Tests for auth etc.
 * Make a login on root url
 * Remove redirect to login

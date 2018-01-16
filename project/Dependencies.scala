@@ -24,7 +24,6 @@ object Dependencies {
   ))
 
   val backendDeps = Def.setting(Seq[ModuleID](
-    "ch.qos.logback" % "logback-classic" % logbackVersion,
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
