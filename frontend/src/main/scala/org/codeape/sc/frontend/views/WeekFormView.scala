@@ -2,6 +2,7 @@ package org.codeape.sc.frontend.views
 
 import io.udash._
 import io.udash.core.Presenter
+import org.codeape.sc.frontend.views.util.TraceId.getTraceId
 import org.codeape.sc.frontend.{Context, WeekFormState}
 import org.codeape.sc.shared.model.PingRequest
 
@@ -30,7 +31,7 @@ class WeekFormPresenter(model: ModelProperty[PingFormModel]) extends Presenter[W
 
   override def handleState(state: WeekFormState): Unit = {
     model.subProp(_.loaded).set(false)
-    restServer.util().ping(Context.getToken(), PingRequest("WeekFormView")).onComplete {
+    restServer.util().ping(getTraceId(), Context.getToken(), PingRequest("WeekFormView")).onComplete {
       case Success(ping) =>
         model.subProp(_.msg).set(ping.msg)
         model.subProp(_.loaded).set(true)

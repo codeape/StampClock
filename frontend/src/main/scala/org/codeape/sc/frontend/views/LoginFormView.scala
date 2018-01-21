@@ -5,7 +5,8 @@ import io.udash._
 import io.udash.bootstrap.button.{ButtonStyle, UdashButton}
 import io.udash.bootstrap.form.UdashForm
 import io.udash.core.Presenter
-import org.codeape.sc.frontend.{Context, WeekFormState, LoginFormState}
+import org.codeape.sc.frontend.views.util.TraceId.getTraceId
+import org.codeape.sc.frontend.{Context, LoginFormState, WeekFormState}
 import org.codeape.sc.shared.model.AuthTokenRequest
 
 import scala.util.{Failure, Success}
@@ -34,6 +35,7 @@ class LoginFormView(model: ModelProperty[LoginFormModel], presenter: LoginFormPr
   private val content = div(
     UdashForm(
       UdashForm.textInput()("User")(model.subProp(_.user)),
+      UdashForm.textInput()("Group")(model.subProp(_.group)),
       UdashForm.passwordInput()("Password")(model.subProp(_.password)),
       loginButton.render,
       br,
@@ -58,6 +60,7 @@ class LoginFormPresenter(model: ModelProperty[LoginFormModel]) extends Presenter
   }
 
   def login(): Unit = restServer.auth().login(
+    getTraceId(),
     AuthTokenRequest(
       user = model.subProp(_.user).get,
       group = model.subProp(_.group).get,

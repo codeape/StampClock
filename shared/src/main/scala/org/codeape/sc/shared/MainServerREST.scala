@@ -17,7 +17,7 @@ trait MainServerREST {
 trait AuthREST {
 
   @POST
-  def login(@Body request: AuthTokenRequest): Future[AuthToken]
+  def login(@Header traceid: String, @Body request: AuthTokenRequest): Future[AuthToken]
 
 }
 
@@ -25,6 +25,6 @@ trait AuthREST {
 trait UtilREST {
 
   @POST
-  def ping(@Header stamptoken: String, @Body request: PingRequest): Future[PingReply]
+  def ping(@Header traceid: String, @Header stamptoken: String, @Body request: PingRequest): Future[PingReply]
 
 }

@@ -6,6 +6,7 @@ import akka.event.{Logging, LoggingAdapter}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import org.codeape.sc.backend.util.StampClockJsonMarshaller
+import org.codeape.sc.backend.util.TraceId._
 import org.codeape.sc.shared.model.{AuthToken, AuthTokenRequest}
 
 class LoginComponent(system: ActorSystem) extends StampClockJsonMarshaller {
@@ -14,11 +15,11 @@ class LoginComponent(system: ActorSystem) extends StampClockJsonMarshaller {
   log.info("Created Login component")
 
   def route: Route = pathPrefix("auth") {
-    path("login") {
+    path("login"){
       post {
-        entity(as[AuthTokenRequest]) { request =>
-          log.debug("Received login request")
-          complete { AuthToken(id = request.password) }
+        (entity(as[AuthTokenRequest]) & trace) { (auth, traceId)=>
+          debug(log, traceId, s"Received login request")
+          complete { AuthToken(id = auth.password) }
         }
       }
     }
