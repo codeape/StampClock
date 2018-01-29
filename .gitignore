@@ -1,6 +1,13 @@
 *.class
 *.log
 
+# slickedit
+*.vpw
+*.vpj
+*.vpwhistu
+*.vpwhist
+*.vtg
+
 # sbt specific
 .cache
 .history
