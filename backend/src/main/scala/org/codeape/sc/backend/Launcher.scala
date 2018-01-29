@@ -7,6 +7,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import org.codeape.sc.backend.components.{LoginComponent, PingComponent}
 import org.codeape.sc.backend.filters.AuthFilter
+import org.codeape.sc.backend.jwt.{JsonWebToken, JwtCodecHS256}
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
@@ -21,9 +22,16 @@ object Launcher {
 
     val log = Logging.getLogger(system, this)
 
-    val loginComponent = new LoginComponent(system)
+    val jwt: JsonWebToken = new JwtCodecHS256("test")
+    log.info(s"JWT key length: ${jwt.keyBitSize} bit")
+    if(jwt.keyBitSize != jwt.minKeyBitSize) {
+      log.warning(s"JWT key length not ${jwt.minKeyBitSize} bit")
+    }
+    log.debug(s"JWT header: ${jwt.headerJson}")
+
+    val loginComponent = new LoginComponent(system, jwt)
     val authFilter = new AuthFilter(system)
-    val pingComponent = new PingComponent(system)
+    val pingComponent = new PingComponent(system, jwt)
 
     val route =
       (path("") & get) {
