@@ -5,6 +5,11 @@ import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
+import com.datastax.driver.core.SocketOptions
+import com.outworkers.phantom.connectors.ContactPoints
+import com.typesafe.config.ConfigFactory
+import org.codeape.sc.backend.cassandra.StampClockDatabase
+import org.codeape.sc.backend.config.StampClockConfig
 import org.codeape.sc.backend.components.{LoginComponent, PingComponent}
 import org.codeape.sc.backend.filters.AuthFilter
 import org.codeape.sc.backend.jwt.{JsonWebToken, JwtCodecHS256}
@@ -15,12 +20,32 @@ import scala.io.StdIn
 object Launcher {
 
   def main(args: Array[String]): Unit = {
+    val config = ConfigFactory.load()
+    val parsedConfig = new StampClockConfig(config.getConfig("StampClock"))
+
+
     implicit val system: ActorSystem = ActorSystem("my-system")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
     val log = Logging.getLogger(system, this)
+
+    log.info("Init Cassandra ")
+    val cassandraHosts = parsedConfig.cassandra.hosts
+    val cassandraPort = parsedConfig.cassandra.port
+    log.info(s"Cassandra hosts: $cassandraHosts port: $cassandraPort")
+    val connector = ContactPoints(
+      hosts = parsedConfig.cassandra.hosts,
+      port = parsedConfig.cassandra.port
+    )
+    .withClusterBuilder(
+      _.withSocketOptions(new SocketOptions().setConnectTimeoutMillis(1000))
+    )
+    .noHeartbeat()
+    .keySpace(parsedConfig.cassandra.keySpace)
+    val database = new StampClockDatabase(connector)
+    database.createTables()
 
     val jwt: JsonWebToken = new JwtCodecHS256("test")
     log.info(s"JWT key length: ${jwt.keyBitSize} bit")
